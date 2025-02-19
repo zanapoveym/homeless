@@ -1,0 +1,16 @@
+async function fetchData(url) {
+    try {
+        let response = await fetch(url);
+        if (!response.ok) {
+            throw new Error("网络响应错误");
+        }
+        let data = await response.json();
+        console.log("获取的数据:", data);
+    } catch (error) {
+        console.error("发生错误:", error);
+    }
+}
+
+// 测试调用
+const apiURL = "https://jsonplaceholder.typicode.com/posts/1";
+fetchData(apiURL);
