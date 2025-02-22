@@ -1,0 +1,31 @@
+# 定义装饰器
+def decorator_a(func):
+    def wrapper(*args, **kwargs):
+        print("装饰器A开始")
+        result = func(*args, **kwargs)
+        print("装饰器A结束")
+        return result
+    return wrapper
+
+def decorator_b(func):
+    def wrapper(*args, **kwargs):
+        print("装饰器B开始")
+        result = func(*args, **kwargs)
+        print("装饰器B结束")
+        return result
+    return wrapper
+
+# 应用多个装饰器
+@decorator_a
+@decorator_b
+def say_hello():
+    print("你好，世界！")
+
+# 测试装饰器链
+say_hello()
+# 输出:
+# 装饰器A开始
+# 装饰器B开始
+# 你好，世界！
+# 装饰器B结束
+# 装饰器A结束
