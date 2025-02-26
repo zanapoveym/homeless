@@ -1,0 +1,19 @@
+import Text.ParserCombinators.ReadP
+import Data.Char
+
+number :: ReadP Int
+number = do
+  ds <- munch1 isDigit
+  return (read ds)
+
+expr :: ReadP Int
+expr = chainl1 factor (skipSpaces >> return (+))
+
+factor :: ReadP Int
+factor = number +++ between (char '(') (char ')') expr
+
+parseExpr :: String -> [(Int, String)]
+parseExpr = readP_to_S expr
+
+main :: IO ()
+main = print $ parseExpr "1 + (2 + 3)"
