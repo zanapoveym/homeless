@@ -1,0 +1,26 @@
+# 定义描述符类
+class PositiveNumber:
+    def __init__(self, name):
+        self.name = name
+
+    def __get__(self, instance, owner):
+        return instance.__dict__.get(self.name, 0)
+
+    def __set__(self, instance, value):
+        if value < 0:
+            raise ValueError("值必须为正数")
+        instance.__dict__[self.name] = value
+
+# 使用描述符
+class BankAccount:
+    balance = PositiveNumber("balance")
+
+    def __init__(self, initial_balance):
+        self.balance = initial_balance
+
+# 测试描述符
+account = BankAccount(100)
+print(account.balance)  # 输出: 100
+account.balance = 200
+print(account.balance)  # 输出: 200
+# account.balance = -50  # 将引发ValueError
