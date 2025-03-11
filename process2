@@ -1,0 +1,23 @@
+class A:
+    def process(self):
+        print("A处理")
+
+class B(A):
+    def process(self):
+        print("B处理")
+        super().process()
+
+class C(A):
+    def process(self):
+        print("C处理")
+        super().process()
+
+class D(B, C):
+    def process(self):
+        print("D处理")
+        super().process()
+
+# 测试多重继承
+d = D()
+d.process()
+# 输出顺序：D处理 -> B处理 -> C处理 -> A处理
