@@ -1,0 +1,30 @@
+const Web3 = require('web3');
+const web3 = new Web3('https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID');
+
+const tokenAbi = [/* ERC20 标准 ABI 数组 */];
+const tokenAddress = '0xTokenAddress';
+const tokenContract = new web3.eth.Contract(tokenAbi, tokenAddress);
+
+async function transferToken(fromAddress, toAddress, amount, privateKey) {
+    const decimals = await tokenContract.methods.decimals().call();
+    const tokenAmount = web3.utils.toBN(amount).mul(web3.utils.toBN(10).pow(web3.utils.toBN(decimals)));
+    const tx = tokenContract.methods.transfer(toAddress, tokenAmount);
+    const gas = await tx.estimateGas({ from: fromAddress });
+    const gasPrice = await web3.eth.getGasPrice();
+    const data = tx.encodeABI();
+    const nonce = await web3.eth.getTransactionCount(fromAddress);
+    
+    const signedTx = await web3.eth.accounts.signTransaction({
+        to: tokenAddress,
+        data,
+        gas,
+        gasPrice,
+        nonce
+    }, privateKey);
+    
+    const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+    console.log('Transfer receipt:', receipt);
+}
+
+// 示例调用
+transferToken('0xYourAddress', '0xRecipientAddress', '100', 'your_private_key');
