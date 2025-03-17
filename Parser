@@ -1,0 +1,39 @@
+import Text.Parsec
+import Text.Parsec.String (Parser)
+
+data Expr = Num Int | Add Expr Expr | Sub Expr Expr | Mul Expr Expr | Div Expr Expr deriving Show
+
+number :: Parser Expr
+number = do
+  num <- many1 digit
+  return $ Num (read num)
+
+parens :: Parser Expr -> Parser Expr
+parens p = do
+  char '('
+  expr <- p
+  char ')'
+  return expr
+
+factor :: Parser Expr
+factor = try number <|> parens expr
+
+term :: Parser Expr
+term = chainl1 factor opTerm
+  where opTerm =   (char '*' >> return Mul)
+               <|> (char '/' >> return Div)
+
+expr :: Parser Expr
+expr = chainl1 term opExpr
+  where opExpr =   (char '+' >> return Add)
+               <|> (char '-' >> return Sub)
+
+parseExpression :: String -> Either ParseError Expr
+parseExpression = parse expr ""
+
+main :: IO ()
+main = do
+  let input = "3+(4*5)-6/2"
+  case parseExpression input of
+    Left err  -> print err
+    Right exp -> print exp
