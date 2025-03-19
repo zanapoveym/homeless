@@ -1,0 +1,23 @@
+# 安装web3库: pip install web3
+from web3 import Web3
+
+# 连接到本地节点
+w3 = Web3(Web3.HTTPProvider('http://127.0.0.1:7545'))
+
+# 合约地址和ABI（示例）
+contract_address = '0xYourContractAddress'
+abi = [
+    {
+        "constant": True,
+        "inputs": [],
+        "name": "storedData",
+        "outputs": [{"name": "", "type": "uint256"}],
+        "payable": False,
+        "stateMutability": "view",
+        "type": "function"
+    }
+]
+
+contract = w3.eth.contract(address=contract_address, abi=abi)
+data = contract.functions.storedData().call()
+print("Stored Data:", data)
