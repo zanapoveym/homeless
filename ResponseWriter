@@ -1,0 +1,22 @@
+package main
+
+import (
+    "fmt"
+    "net/http"
+    "sync"
+)
+
+var counter int
+var mutex sync.Mutex
+
+func handler(w http.ResponseWriter, r *http.Request) {
+    mutex.Lock()
+    counter++
+    fmt.Fprintf(w, "Request number: %d", counter)
+    mutex.Unlock()
+}
+
+func main() {
+    http.HandleFunc("/", handler)
+    http.ListenAndServe(":8080", nil)
+}
