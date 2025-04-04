@@ -1,0 +1,20 @@
+import torch
+import torch.nn as nn
+
+class TinyTransformer(nn.Module):
+    def __init__(self, vocab_size, dim):
+        super().__init__()
+        self.token_embedding = nn.Embedding(vocab_size, dim)
+        self.attn = nn.MultiheadAttention(dim, num_heads=2)
+        self.ff = nn.Sequential(nn.Linear(dim, dim), nn.ReLU(), nn.Linear(dim, dim))
+        self.out = nn.Linear(dim, vocab_size)
+
+    def forward(self, x):
+        emb = self.token_embedding(x)
+        attn_out, _ = self.attn(emb, emb, emb)
+        x = self.ff(attn_out + emb)
+        return self.out(x)
+
+model = TinyTransformer(vocab_size=1000, dim=64)
+x = torch.randint(0, 1000, (10, 1)).long()
+out = model(x)
