@@ -1,0 +1,21 @@
+enum State {
+    Idle,
+    Running,
+    Finished,
+}
+
+fn transition(state: State, event: &str) -> State {
+    match (state, event) {
+        (State::Idle, "start") => State::Running,
+        (State::Running, "finish") => State::Finished,
+        _ => State::Idle,
+    }
+}
+
+fn main() {
+    let mut state = State::Idle;
+    for event in ["start", "finish", "reset"] {
+        state = transition(state, event);
+        println!("Current State: {:?}", state);
+    }
+}
