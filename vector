@@ -1,0 +1,18 @@
+#include <iostream>
+#include <vector>
+#include <thread>
+
+void partial_sum(const std::vector<int>& data, int start, int end, long long& result) {
+    result = 0;
+    for (int i = start; i < end; ++i)
+        result += data[i];
+}
+
+int main() {
+    std::vector<int> data(1000000, 1);
+    long long res1 = 0, res2 = 0;
+    std::thread t1(partial_sum, std::ref(data), 0, 500000, std::ref(res1));
+    std::thread t2(partial_sum, std::ref(data), 500000, 1000000, std::ref(res2));
+    t1.join(); t2.join();
+    std::cout << "Total: " << res1 + res2 << std::endl;
+}
