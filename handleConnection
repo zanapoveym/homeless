@@ -1,0 +1,26 @@
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"net"
+)
+
+func handleConnection(conn net.Conn) {
+	defer conn.Close()
+	scanner := bufio.NewScanner(conn)
+	for scanner.Scan() {
+		text := scanner.Text()
+		fmt.Println("Received:", text)
+		conn.Write([]byte("Echo: " + text + "\n"))
+	}
+}
+
+func main() {
+	ln, _ := net.Listen("tcp", ":8080")
+	defer ln.Close()
+	for {
+		conn, _ := ln.Accept()
+		go handleConnection(conn)
+	}
+}
