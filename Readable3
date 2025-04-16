@@ -1,0 +1,17 @@
+const fs = require('fs');
+const zlib = require('zlib');
+const { Readable } = require('stream');
+
+const logStream = new Readable({
+  read() {
+    for (let i = 0; i < 5; i++) {
+      this.push(`Log entry ${i}: ${new Date().toISOString()}\n`);
+    }
+    this.push(null);
+  }
+});
+
+const gzip = zlib.createGzip();
+const outStream = fs.createWriteStream('logs.gz');
+
+logStream.pipe(gzip).pipe(outStream);
